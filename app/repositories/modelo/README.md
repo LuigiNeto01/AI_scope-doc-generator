@@ -1,6 +1,12 @@
-﻿# app/repositories/modelo
+# app/repositories/modelo
 
-Arquivos desta pasta:
+Repositorio do template base de documento Word.
 
-- Modelo.docx: template base do documento Word usado na geracao final do escopo.
+## Responsabilidades
 
+- Fornecer layout inicial para o DOCX final.
+- Servir como base visual unica para o documento consolidado.
+
+## Arquivos
+
+- `Modelo.docx`: template usado pela exportacao de escopo.

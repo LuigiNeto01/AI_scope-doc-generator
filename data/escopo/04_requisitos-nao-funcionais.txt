@@ -1,0 +1,52 @@
+## 4) Requisitos Não Funcionais (RNF)
+
+________________________________________
+### Segurança e Controle de Acesso
+
+RNF-01 O sistema deve garantir que os dados pessoais dos usuários, como e-mail e senha, sejam armazenados de forma segura, utilizando criptografia.
+
+RNF-02 O sistema deve implementar um mecanismo de verificação de e-mail para garantir que o usuário tenha acesso ao e-mail informado durante o registro.
+
+### Regras / Critérios
+- O sistema deve bloquear tentativas de login após 5 falhas consecutivas.
+- Necessita Validação: O método de criptografia a ser utilizado.
+
+________________________________________
+### Performance e Escalabilidade
+
+RNF-03 O sistema deve ser capaz de suportar até 10.000 usuários simultâneos sem degradação de performance.
+
+RNF-04 O tempo de resposta para operações de upload e download deve ser inferior a 3 segundos em condições normais de uso.
+
+### Regras / Critérios
+- O sistema deve manter um tempo de resposta de busca inferior a 2 segundos.
+- Necessita Validação: O volume máximo de uploads simultâneos permitido.
+
+________________________________________
+### Disponibilidade e Confiabilidade
+
+RNF-05 O sistema deve garantir uma disponibilidade mínima de 99,5% ao longo do mês.
+
+RNF-06 O sistema deve ter um plano de recuperação de desastres que permita a restauração de dados em até 24 horas após uma falha crítica.
+
+________________________________________
+### Usabilidade e Experiência
+
+RNF-07 O sistema deve ter uma interface intuitiva, permitindo que novos usuários consigam realizar o registro e login em menos de 5 minutos.
+
+RNF-08 O design do sistema deve ser responsivo, garantindo uma experiência de uso adequada em dispositivos móveis, tablets e desktops.
+
+### Regras / Critérios
+- O sistema deve permitir que 90% dos usuários consigam encontrar e baixar um conteúdo em até 3 cliques.
+- Necessita Validação: O número de usuários que completam o registro sem assistência.
+
+________________________________________
+### Conformidade e Privacidade
+
+RNF-09 O sistema deve estar em conformidade com a Lei Geral de Proteção de Dados (LGPD) no que diz respeito ao tratamento de dados pessoais.
+
+RNF-10 O sistema deve permitir que os usuários solicitem a exclusão de seus dados pessoais a qualquer momento.
+
+### Regras / Critérios
+- O sistema deve fornecer uma política de privacidade clara e acessível a todos os usuários.
+- Necessita Validação: O processo de exclusão de dados e seu tempo de resposta.

@@ -1,0 +1,72 @@
+## 2) Requisitos Funcionais (RF)
+
+________________________________________
+RF-01 Módulo de Autenticação e Registro
+
+RF-01.1 O sistema deve permitir que o usuário se registre utilizando e-mail, nome de usuário e senha.
+RF-01.2 O sistema deve enviar um código de verificação para o e-mail do usuário após o registro.
+RF-01.3 O sistema deve permitir que o usuário faça login utilizando seu e-mail e senha.
+
+### Regras de Negócio
+- O e-mail informado deve ser verificado antes da conclusão do registro.
+- O nome de usuário deve ser único entre os usuários registrados.
+
+________________________________________
+RF-02 Módulo de Perfil do Usuário
+
+RF-02.1 O sistema deve permitir que o usuário acesse e edite seu perfil, incluindo foto de perfil, nome de usuário, biografia e banner.
+RF-02.2 O sistema deve exibir as texturas, mods ou skins que o usuário fez upload e que favoritou.
+
+### Regras de Negócio
+- O usuário deve ter a opção de alterar seu nome de usuário, desde que o novo nome seja único.
+- O banner do perfil deve ser personalizável apenas para usuários com assinatura premium.
+
+________________________________________
+RF-03 Módulo de Upload de Conteúdo
+
+RF-03.1 O sistema deve permitir que o usuário faça upload de texturas, skins e mods.
+RF-03.2 O sistema deve permitir que o usuário adicione informações sobre o mod, incluindo versão e tipo de instância (vanilla, fabric, forge).
+
+### Regras de Negócio
+- O upload de mods deve incluir pelo menos uma imagem do mod.
+- O sistema deve validar as informações do mod antes de permitir o upload.
+
+________________________________________
+RF-04 Módulo de Download de Conteúdo
+
+RF-04.1 O sistema deve permitir que o usuário visualize detalhes de uma skin, mod ou textura antes de realizar o download.
+RF-04.2 O sistema deve incluir um botão de download que, ao ser clicado, inicie o download do conteúdo selecionado.
+
+### Regras de Negócio
+- O botão de download deve ser destacado e mudar de aparência ao passar o mouse sobre ele.
+- O sistema deve registrar quantos downloads cada item recebeu.
+
+________________________________________
+RF-05 Módulo de Comunidade
+
+RF-05.1 O sistema deve permitir que os usuários interajam em comunidades temáticas.
+RF-05.2 O sistema deve permitir que os usuários sigam comunidades específicas.
+
+### Regras de Negócio
+- As comunidades devem ser criadas por usuários e podem ter um nome e descrição.
+- O sistema deve permitir que os usuários se inscrevam e deixem comentários nas comunidades.
+
+________________________________________
+RF-06 Módulo de Monetização
+
+RF-06.1 O sistema deve oferecer um plano de assinatura premium que permita acesso a skins e mods exclusivos.
+RF-06.2 O sistema deve permitir que usuários premium personalizem ainda mais seus perfis, como adicionar GIFs e mudar a fonte.
+
+### Regras de Negócio
+- Apenas usuários com assinatura premium podem acessar conteúdo exclusivo.
+- O sistema deve oferecer uma opção de cancelamento da assinatura a qualquer momento.
+
+________________________________________
+RF-07 Módulo de Busca e Filtros
+
+RF-07.1 O sistema deve permitir que os usuários busquem por texturas, mods e skins utilizando filtros.
+RF-07.2 O sistema deve exibir resultados de busca separados por categoria (texturas, mods, skins).
+
+### Regras de Negócio
+- Os filtros devem incluir opções para selecionar a versão do mod ou textura.
+- O sistema deve garantir que os resultados sejam atualizados em tempo real conforme os filtros são aplicados.

@@ -1,10 +1,16 @@
-﻿# tests
+# tests
 
-Arquivos desta pasta:
+Camada dedicada a testes automatizados.
 
-- __init__.py: marca o pacote de testes.
+## Estado Atual
 
-Observacao:
+- Estrutura inicial pronta (`__init__.py`).
+- Ainda sem suite de testes implementada.
 
-- Ainda nao existem casos de teste implementados nesta base.
+## Recomendacao
 
+Adicionar testes para:
+
+- Montagem de prompts e injecao de dependencias entre secoes.
+- Regras de normalizacao de texto consolidado.
+- Exportacao de DOCX e preservacao de estrutura visual.

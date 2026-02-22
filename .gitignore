@@ -5,4 +5,5 @@
 .env
 .venv/
 venv/
+data/
 

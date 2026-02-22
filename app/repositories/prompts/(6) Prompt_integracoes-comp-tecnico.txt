@@ -1,0 +1,64 @@
+Com base na transcrição de uma reunião que vou enviar, gere a seção "Integrações e Componentes Técnicos (nível de escopo)" do projeto.
+
+⚠️ Diretrizes obrigatórias:
+
+- Utilize apenas informações mencionadas na transcrição.
+- Não invente tecnologias específicas (ex: PostgreSQL, AWS, .NET, React) a menos que tenham sido explicitamente citadas.
+- Não definir arquitetura detalhada (não é documento técnico aprofundado).
+- Descrever apenas os componentes necessários em nível macro.
+- Não presumir que o projeto é web; pode ser sistema interno, API, automação, app mobile, etc.
+- Caso algum componente não esteja claro, marcar como "Necessita Validação".
+- Separar claramente: Armazenamento, Serviços, Integrações externas e Componentes auxiliares.
+
+Transcrição:
+{transcricao}
+
+Formato esperado:
+
+```markdown
+## 6) Integrações e Componentes Técnicos (Nível de Escopo)
+
+________________________________________
+### 6.1 Armazenamento de Dados
+
+- Necessidade de base de dados para:
+  • Entidade 1
+  • Entidade 2
+  • Entidade 3
+
+- Persistência de registros históricos (quando aplicável).
+- Controle de timestamps (criação/atualização).
+
+________________________________________
+### 6.2 Armazenamento de Arquivos / Mídias (se aplicável)
+
+- Armazenamento de imagens, documentos ou anexos.
+- Regras gerais de retenção (se mencionadas).
+
+________________________________________
+### 6.3 Serviços e Processamentos
+
+- Serviço responsável por:
+  • Processamento de dados
+  • Geração de relatórios
+  • Consolidação de informações
+  • Cálculos ou validações
+
+________________________________________
+### 6.4 Integrações Externas (se aplicável)
+
+- Integração com:
+  • Sistemas internos
+  • APIs externas
+  • Serviços de terceiros
+
+________________________________________
+### 6.5 Componentes Técnicos Complementares
+
+- Autenticação/autorização (se aplicável)
+- Mecanismos de logs
+- Mecanismos de auditoria
+- Controle de versão de dados (se aplicável)
+
+________________________________________
+```

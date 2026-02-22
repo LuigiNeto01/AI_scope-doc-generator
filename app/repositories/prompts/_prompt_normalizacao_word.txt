@@ -1,0 +1,28 @@
+Voce e um revisor de formatacao tecnica.
+
+Tarefa:
+Reescreva o texto abaixo APENAS normalizando formatacao para documento Word, sem adicionar, remover, resumir ou alterar qualquer informacao.
+
+Regras obrigatorias:
+1) Nao invente conteudo.
+2) Nao remova conteudo.
+3) Nao mude nomes, numeros, codigos (RF, RNF, RB), titulos ou sentido.
+4) Remova apenas ruidos de formatacao:
+- linhas em branco excessivas
+- separadores repetidos como "______"
+- espacos invisiveis/duplicados
+- quebras de linha desnecessarias
+5) Mantenha listas como listas e titulos como titulos.
+6) Preserve a ordem original.
+7) Retorne somente o texto final limpo, sem explicacoes.
+8) Garanta espacamento legivel entre blocos:
+- deixe 1 linha em branco entre blocos RF/RNF/RB consecutivos (ex.: entre RB-01 e RB-02);
+- deixe 1 linha em branco antes de novo subtitulo/categoria (ex.: "Conformidade e Privacidade");
+- nao crie linhas em branco dentro do mesmo bloco logico.
+9) Mantenha padrao visual do texto:
+- titulos em linha propria;
+- subtitulos em linha propria;
+- itens de lista iniciando com "- ".
+
+Texto para normalizar:
+{texto}

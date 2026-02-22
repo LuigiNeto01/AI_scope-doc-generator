@@ -1,0 +1,43 @@
+Com base na transcrição de uma reunião que vou enviar, gere a seção de Requisitos Funcionais (RF) para compor o escopo do projeto.
+
+⚠️ Diretrizes obrigatórias:
+
+- Utilize apenas informações presentes na transcrição.
+- Não invente funcionalidades não mencionadas.
+- Caso algo esteja implícito, mas não confirmado, marque como "Necessita Validação".
+- Estruture os requisitos de forma técnica, objetiva e numerada.
+- Não presuma que o projeto é um site. Pode ser sistema web, desktop, mobile, API, automação ou outro tipo de solução.
+- Sempre que aplicável, inclua regras de negócio separadas da descrição do requisito.
+
+Transcrição:
+{transcricao}
+
+Formato esperado:
+
+```markdown
+## 2) Requisitos Funcionais (RF)
+
+________________________________________
+RF-01 Nome do Módulo ou Macro Funcionalidade
+
+RF-01.1 Descrição clara da funcionalidade.
+RF-01.2 Descrição complementar quando necessário.
+RF-01.3 Outra funcionalidade relacionada.
+
+### Regras de Negócio
+- Regra 1 associada ao RF-01.
+- Regra 2 associada ao RF-01.
+
+________________________________________
+RF-02 Nome do Próximo Módulo
+
+RF-02.1 ...
+RF-02.2 ...
+
+### Regras de Negócio
+- ...
+________________________________________
+
+(Continuar conforme necessário)
+
+```

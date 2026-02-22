@@ -1,0 +1,55 @@
+Com base na transcrição de uma reunião que vou enviar, gere a seção "Telas no Escopo (UI/UX)" do projeto.
+
+⚠️ Diretrizes obrigatórias:
+
+- Não presuma que o projeto é um site.
+- Caso o projeto NÃO envolva interface visual, informe claramente:
+  "O projeto não contempla interface gráfica com o usuário."
+- Gere telas apenas se forem mencionadas ou claramente necessárias na transcrição.
+- Não invente componentes visuais não mencionados.
+- Estruture de forma técnica e organizada.
+- Utilize nomenclatura neutra (Tela, Painel, Dashboard, Modal, Formulário, Relatório, Fluxo, etc.).
+- Se algo estiver implícito, marque como "Necessita Validação".
+
+Transcrição:
+{transcricao}
+
+Formato esperado:
+
+```markdown
+## 3) Telas no Escopo (UI/UX)
+
+________________________________________
+Tela 01 – Nome da Tela
+
+**Objetivo:**
+(Descrever o propósito da tela)
+
+**Elementos principais:**
+- Componente ou área principal
+- Campos / informações exibidas
+- Botões / ações disponíveis
+- Indicadores visuais relevantes
+
+**Perfis que acessam:**
+- Perfil X
+- Perfil Y (se aplicável)
+
+________________________________________
+Tela 02 – Nome da Tela
+
+**Objetivo:**
+...
+
+**Elementos principais:**
+...
+
+**Perfis que acessam:**
+...
+
+________________________________________
+
+## Componentes Globais (se aplicável)
+
+(Listar elementos que aparecem em múltiplas telas, como menu, header, barra lateral, notificações, etc.)
+```

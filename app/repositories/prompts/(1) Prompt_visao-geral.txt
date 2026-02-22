@@ -1,0 +1,30 @@
+Com base na transcrição de uma reunião que vou enviar, gere uma visão geral do produto para compor o escopo do projeto.
+
+⚠️ Importante:
+- Utilize apenas informações presentes na transcrição.
+- Não invente funcionalidades ou decisões não mencionadas.
+- Caso alguma informação esteja ambígua, sinalize como "Necessita validação".
+- Mantenha linguagem formal e objetiva, adequada para documento de escopo.
+
+Transcrição:
+{transcricao}
+
+Formato esperado de entrega:
+
+```markdown
+## 1) Visão Geral do Produto
+
+**Nome do Projeto:**  
+(descrever conforme mencionado ou sugerir com base no contexto)
+
+**Objetivo do Produto:**  
+(descrever o propósito macro da solução e o problema que resolve)
+
+**Contexto de Negócio:**  
+(caso tenha sido mencionado na reunião)
+
+**Perfis de Usuário (se aplicável):**
+
+- **Nome do Perfil:**  
+  Descrição das responsabilidades e interações no sistema.
+```

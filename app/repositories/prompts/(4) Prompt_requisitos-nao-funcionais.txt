@@ -1,0 +1,68 @@
+Com base na transcrição de uma reunião que vou enviar, gere a seção de Requisitos Não Funcionais (RNF) para compor o escopo do projeto.
+
+⚠️ Diretrizes obrigatórias:
+
+- Utilize apenas informações mencionadas ou claramente inferíveis na transcrição.
+- Não presuma que o projeto é um site (pode ser web, desktop, mobile, API, automação, serviço interno, etc.).
+- Não invente tecnologias específicas (ex: React, .NET, PostgreSQL) a menos que tenham sido explicitamente citadas.
+- Quando possível, sugira métricas mensuráveis.
+- Caso algo não esteja definido, marcar como "Necessita Validação".
+- Organize os RNFs por categoria (Segurança, Performance, Disponibilidade, etc.).
+- Utilize linguagem técnica e objetiva.
+
+Transcrição:
+{transcricao}
+
+Requisitos funcionais
+{req_func}
+
+Formato esperado:
+
+```markdown
+## 4) Requisitos Não Funcionais (RNF)
+
+________________________________________
+### Segurança e Controle de Acesso
+
+RNF-01 Descrição do requisito.
+
+RNF-02 Descrição do requisito.
+
+### Regras / Critérios
+- Critério mensurável ou observação.
+- Item que necessita validação (se aplicável).
+
+________________________________________
+### Performance e Escalabilidade
+
+RNF-03 ...
+
+RNF-04 ...
+
+### Regras / Critérios
+- Tempo de resposta esperado (se mencionado).
+- Comportamento sob volume elevado (se mencionado).
+
+________________________________________
+### Disponibilidade e Confiabilidade
+
+RNF-05 ...
+
+RNF-06 ...
+
+________________________________________
+### Usabilidade e Experiência
+
+RNF-07 ...
+
+RNF-08 ...
+
+________________________________________
+### Conformidade e Privacidade
+
+RNF-09 ...
+
+RNF-10 ...
+
+________________________________________
+```

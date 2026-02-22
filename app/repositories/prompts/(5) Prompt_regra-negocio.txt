@@ -1,0 +1,50 @@
+Com base na transcrição de uma reunião que vou enviar, gere a seção de Regras de Negócio (RB) essenciais para compor o escopo do projeto.
+
+⚠️ Diretrizes obrigatórias:
+
+- Utilize apenas informações mencionadas na transcrição.
+- Não presuma que o projeto é um site (pode ser sistema web, desktop, mobile, API, automação, etc.).
+- Não invente fluxos ou validações não citadas.
+- Diferencie claramente Regra de Negócio de Requisito Funcional.
+- Regras de Negócio devem descrever restrições, validações, políticas ou comportamentos obrigatórios do sistema.
+- Utilize linguagem objetiva e normativa (ex: "deve", "não deve", "somente", "é obrigatório").
+- Caso alguma regra esteja implícita, marcar como "Necessita Validação".
+- Quando aplicável, indicar impacto ou dependência com RF.
+
+Transcrição:
+{transcricao}
+
+Requisitos funcionais
+{req_func}
+
+Formato esperado:
+
+```markdown
+## 5) Regras de Negócio (RB) Essenciais
+
+________________________________________
+RB-01 Nome resumido da regra
+
+Descrição detalhada da regra.
+
+**Impacta:**
+- RF-XX (se aplicável)
+- Perfil X (se aplicável)
+
+________________________________________
+RB-02 Nome resumido da regra
+
+Descrição detalhada da regra.
+
+**Impacta:**
+- RF-XX
+- Processo Y
+
+________________________________________
+
+## Regras de Integridade (se aplicável)
+
+RB-XX ...
+
+________________________________________
+```

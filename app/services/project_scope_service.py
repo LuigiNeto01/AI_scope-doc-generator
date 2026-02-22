@@ -1,8 +1,27 @@
+"""Servico principal de geracao, normalizacao e exportacao do escopo do projeto."""
+
 from pathlib import Path
 import re
 from copy import deepcopy
 import logging
 
+from app.core.constants import (
+    DEFAULT_PROMPTS_DIR,
+    DEFAULT_SCOPE_DIR,
+    DEFAULT_SCOPE_DOCX_PATH,
+    DEFAULT_SCOPE_NORMALIZED_TXT_PATH,
+    DEFAULT_TEXT_MODEL,
+    DEFAULT_WORD_NORMALIZATION_PROMPT_PATH,
+    DEFAULT_WORD_TEMPLATE_PATH,
+)
+from app.core.exceptions import (
+    DependencyNotInstalledError,
+    DocumentGenerationError,
+    PromptDirectoryNotFoundError,
+    PromptFileNotFoundError,
+    ScopeGenerationError,
+    SectionFileNotFoundError,
+)
 from app.services.ai.generative_service import GenerativeService
 
 logger = logging.getLogger(__name__)
@@ -15,12 +34,15 @@ SUBTITULO_BLOCO_RE = re.compile(
 
 
 class ProjectScopeService:
+    """Servico responsavel por gerar, normalizar e exportar o escopo do projeto."""
+
     def __init__(
         self,
-        prompts_dir: str = "app/repositories/prompts",
-        output_dir: str = "data/escopo",
-        prompt_normalizacao_path: str = "app/repositories/prompts/_prompt_normalizacao_word.txt",
+        prompts_dir: str = str(DEFAULT_PROMPTS_DIR),
+        output_dir: str = str(DEFAULT_SCOPE_DIR),
+        prompt_normalizacao_path: str = str(DEFAULT_WORD_NORMALIZATION_PROMPT_PATH),
     ):
+        """Inicializa caminhos de entrada/saida e o cliente de geracao de texto."""
         self.prompts_dir = Path(prompts_dir)
         self.output_dir = Path(output_dir)
         self.prompt_normalizacao_path = Path(prompt_normalizacao_path)
@@ -29,24 +51,27 @@ class ProjectScopeService:
     def gerar_documento_word_de_txts(
         self,
         arquivos_txt: list[str],
-        arquivo_saida: str = "data/escopo/documento_escopo.docx",
+        arquivo_saida: str = str(DEFAULT_SCOPE_DOCX_PATH),
+        arquivo_texto_normalizado_saida: str = str(DEFAULT_SCOPE_NORMALIZED_TXT_PATH),
         normalizar_com_ia: bool = False,
-        model_normalizacao: str = "gpt-4o-mini",
+        model_normalizacao: str = DEFAULT_TEXT_MODEL,
     ) -> str:
+        """Gera DOCX a partir de secoes txt ja existentes, com normalizacao opcional."""
         if not arquivos_txt:
-            raise ValueError("Nenhum arquivo .txt informado para gerar o Word.")
+            raise ScopeGenerationError("Nenhum arquivo .txt informado para gerar o Word.")
 
         secoes_geradas: list[tuple[int, str]] = []
         for arquivo in arquivos_txt:
             path = Path(arquivo)
             if not path.exists():
-                raise FileNotFoundError(f"Arquivo de secao nao encontrado: {path}")
+                raise SectionFileNotFoundError(f"Arquivo de secao nao encontrado: {path}")
 
             conteudo = self._limpar_blocos_markdown(path.read_text(encoding="utf-8"))
             secoes_geradas.append((self._ordem_secao_saida(path.name), conteudo))
 
         secoes_ordenadas = sorted(secoes_geradas, key=lambda item: item[0])
         if normalizar_com_ia:
+            # Normaliza o texto consolidado apenas uma vez para evitar divergencia entre secoes.
             logger.info(
                 "Normalizando texto consolidado de %d secoes antes de gerar o Word",
                 len(secoes_ordenadas),
@@ -56,6 +81,10 @@ class ProjectScopeService:
                 texto=texto_consolidado,
                 model=model_normalizacao,
             )
+            self._salvar_texto_normalizado(
+                texto=texto_normalizado,
+                arquivo_saida=arquivo_texto_normalizado_saida,
+            )
             secoes_ordenadas = [(secoes_ordenadas[0][0], texto_normalizado)]
 
         logger.info("Gerando Word a partir de %d arquivos txt", len(secoes_ordenadas))
@@ -64,9 +93,11 @@ class ProjectScopeService:
     def gerar_documentos(
         self,
         transcricao: str,
-        model: str = "gpt-4o-mini",
-        model_normalizacao: str = "gpt-4o-mini",
+        model: str = DEFAULT_TEXT_MODEL,
+        model_normalizacao: str = DEFAULT_TEXT_MODEL,
+        arquivo_texto_normalizado_saida: str = str(DEFAULT_SCOPE_NORMALIZED_TXT_PATH),
     ) -> tuple[list[str], str]:
+        """Gera secoes de escopo via prompts, normaliza o consolidado e cria o DOCX final."""
         logger.info("Carregando prompts de: %s", self.prompts_dir)
         prompts = self._listar_prompts_ordenados()
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -76,6 +107,7 @@ class ProjectScopeService:
         secoes_geradas: list[tuple[int, str]] = []
         respostas_por_numero: dict[int, str] = {}
         for prompt_path in prompts:
+            # A ordem do prompt define dependencias entre secoes (ex.: prompt 4 e 5 usam prompt 2).
             numero_prompt = self._ordem_prompt(prompt_path)
             logger.info("Processando prompt %s (%s)", numero_prompt, prompt_path.name)
             prompt_template = prompt_path.read_text(encoding="utf-8")
@@ -110,6 +142,10 @@ class ProjectScopeService:
             texto=texto_consolidado,
             model=model_normalizacao,
         )
+        self._salvar_texto_normalizado(
+            texto=texto_normalizado,
+            arquivo_saida=arquivo_texto_normalizado_saida,
+        )
 
         logger.info("Gerando documento Word consolidado")
         caminho_docx = self._gerar_documento_word([(secoes_geradas[0][0], texto_normalizado)])
@@ -117,7 +153,17 @@ class ProjectScopeService:
         return arquivos_gerados, caminho_docx
 
     @staticmethod
+    def _salvar_texto_normalizado(texto: str, arquivo_saida: str) -> str:
+        """Persiste o texto normalizado consolidado em disco."""
+        saida = Path(arquivo_saida)
+        saida.parent.mkdir(parents=True, exist_ok=True)
+        saida.write_text((texto or "").strip(), encoding="utf-8")
+        logger.info("Texto normalizado salvo em: %s", saida)
+        return str(saida)
+
+    @staticmethod
     def _consolidar_secoes_para_normalizacao(secoes_geradas: list[tuple[int, str]]) -> str:
+        """Consolida as secoes em um unico texto para normalizacao de formato."""
         textos: list[str] = []
         for _, conteudo in secoes_geradas:
             texto = (conteudo or "").strip()
@@ -127,8 +173,11 @@ class ProjectScopeService:
         return "\n\n".join(textos).strip()
 
     def _listar_prompts_ordenados(self) -> list[Path]:
+        """Lista e ordena os prompts validos por numero no nome do arquivo."""
         if not self.prompts_dir.exists():
-            raise FileNotFoundError(f"Diretorio de prompts nao encontrado: {self.prompts_dir}")
+            raise PromptDirectoryNotFoundError(
+                f"Diretorio de prompts nao encontrado: {self.prompts_dir}"
+            )
 
         arquivos = []
         for path in self.prompts_dir.glob("*.txt"):
@@ -140,11 +189,14 @@ class ProjectScopeService:
 
         arquivos = sorted(arquivos, key=self._ordem_prompt)
         if not arquivos:
-            raise FileNotFoundError(f"Nenhum prompt .txt encontrado em: {self.prompts_dir}")
+            raise PromptFileNotFoundError(
+                f"Nenhum prompt .txt encontrado em: {self.prompts_dir}"
+            )
         return arquivos
 
     @staticmethod
     def _ordem_prompt(path: Path) -> int:
+        """Extrai o numero do prompt para ordenacao deterministica."""
         match = re.search(r"\((\d+)\)", path.name)
         if match:
             return int(match.group(1))
@@ -152,6 +204,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _nome_saida(nome_arquivo_prompt: str) -> str:
+        """Converte nome de prompt em nome de arquivo de secao padronizado."""
         numero_match = re.search(r"\((\d+)\)", nome_arquivo_prompt)
         numero = int(numero_match.group(1)) if numero_match else 0
 
@@ -168,6 +221,7 @@ class ProjectScopeService:
         transcricao: str,
         respostas_por_numero: dict[int, str],
     ) -> str:
+        """Monta prompt final com transcricao e dependencias de secoes anteriores."""
         prompt_final = prompt_template.replace("{transcricao}", transcricao)
 
         if numero_prompt in {4, 5}:
@@ -191,6 +245,7 @@ class ProjectScopeService:
         return prompt_final
 
     def _normalizar_texto_para_word_com_ia(self, texto: str, model: str) -> str:
+        """Normaliza o texto consolidado para melhor estrutura antes da exportacao Word."""
         texto_base = (texto or "").strip()
         if not texto_base:
             return texto_base
@@ -219,33 +274,37 @@ class ProjectScopeService:
     def _gerar_documento_word(
         self,
         secoes_geradas: list[tuple[int, str]],
-        modelo_path: str = "app/repositories/modelo/Modelo.docx",
-        arquivo_saida: str = "data/escopo/documento_escopo.docx",
+        modelo_path: str = str(DEFAULT_WORD_TEMPLATE_PATH),
+        arquivo_saida: str = str(DEFAULT_SCOPE_DOCX_PATH),
     ) -> str:
+        """Monta o DOCX final usando template base e secoes ordenadas."""
         try:
             from docx import Document
         except ModuleNotFoundError as exc:
-            raise ModuleNotFoundError(
+            raise DependencyNotInstalledError(
                 "Dependencia 'python-docx' nao encontrada. Instale com: pip install python-docx"
             ) from exc
 
         if not secoes_geradas:
-            raise ValueError("Nenhuma secao de escopo foi gerada para exportacao Word.")
+            raise DocumentGenerationError("Nenhuma secao de escopo foi gerada para exportacao Word.")
 
         modelo = Path(modelo_path)
         if not modelo.exists():
-            raise FileNotFoundError(f"Modelo Word nao encontrado: {modelo}")
+            raise DocumentGenerationError(f"Modelo Word nao encontrado: {modelo}")
 
         logger.info("Montando Word com modelo: %s", modelo)
         documento = Document(str(modelo))
         if not documento.paragraphs:
-            raise ValueError("O modelo Word nao possui paragrafo base para replicacao.")
+            raise DocumentGenerationError(
+                "O modelo Word nao possui paragrafo base para replicacao."
+            )
 
         paragrafo_base = deepcopy(documento.paragraphs[0]._p)
         self._remover_paragrafos_extras(documento)
 
         for indice, (_, conteudo) in enumerate(secoes_geradas):
             if indice > 0:
+                # Mantem separacao visual entre secoes no documento final.
                 documento.add_page_break()
                 documento._body._element.append(deepcopy(paragrafo_base))
                 logger.info("Nova pagina adicionada para secao %d", indice + 1)
@@ -259,6 +318,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _remover_paragrafos_extras(documento) -> None:
+        """Remove paragrafos excedentes do template, preservando apenas a base."""
         paragrafos = list(documento.paragraphs)
         for paragrafo in paragrafos[1:]:
             elemento = paragrafo._element
@@ -266,6 +326,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _adicionar_texto(documento, conteudo: str) -> None:
+        """Interpreta marcacoes simples e adiciona o conteudo no documento Word."""
         texto = (conteudo or "").strip()
         if not texto:
             paragrafo = documento.add_paragraph("Sem conteudo gerado para esta secao.")
@@ -273,31 +334,31 @@ class ProjectScopeService:
             return
 
         linhas = ProjectScopeService._normalizar_linhas_para_word(texto)
-        espacamento_pendente = False
         for linha_limpa in linhas:
             if not linha_limpa:
-                espacamento_pendente = True
+                # Linha vazia real para manter o mesmo efeito visual do TXT no DOCX.
+                paragrafo_vazio = documento.add_paragraph("")
+                ProjectScopeService._estilizar_paragrafo(paragrafo_vazio, tipo="normal")
                 continue
 
             inicio_de_bloco = CODIGO_REQUISITO_RE.match(linha_limpa) is not None
             subtitulo_bloco = SUBTITULO_BLOCO_RE.match(linha_limpa) is not None
+            # Mantido explicito para facilitar ajustes finos de layout no futuro.
             if inicio_de_bloco:
-                espaco_antes = 18
-            elif subtitulo_bloco or espacamento_pendente:
-                espaco_antes = 12
+                espaco_antes = 0
+            elif subtitulo_bloco:
+                espaco_antes = 0
             else:
                 espaco_antes = 0
 
             if linha_limpa.startswith("## "):
                 titulo = linha_limpa[3:].strip()
                 ProjectScopeService._adicionar_titulo(documento, titulo, level=2)
-                espacamento_pendente = False
                 continue
 
             if linha_limpa.startswith("### "):
                 titulo = linha_limpa[4:].strip()
                 ProjectScopeService._adicionar_titulo(documento, titulo, level=3)
-                espacamento_pendente = False
                 continue
 
             if linha_limpa.startswith("- ") or linha_limpa.startswith("\u2022 "):
@@ -308,7 +369,6 @@ class ProjectScopeService:
                     tipo="lista",
                     space_before_pt=espaco_antes,
                 )
-                espacamento_pendente = False
                 continue
 
             paragrafo = documento.add_paragraph()
@@ -318,10 +378,10 @@ class ProjectScopeService:
                 tipo="normal",
                 space_before_pt=espaco_antes,
             )
-            espacamento_pendente = False
 
     @staticmethod
     def _limpar_blocos_markdown(texto: str) -> str:
+        """Remove cercas markdown e reduz ruido de quebras de linha."""
         if not texto:
             return ""
 
@@ -346,6 +406,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _adicionar_texto_com_negrito(paragrafo, texto: str) -> None:
+        """Converte marcacao **texto** em runs com negrito no Word."""
         partes = re.split(r"(\*\*.*?\*\*)", texto)
         for parte in partes:
             if not parte:
@@ -360,6 +421,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _adicionar_bullet(documento):
+        """Adiciona paragrafo de lista com fallback para modelos sem estilo de bullet."""
         for estilo in ("List Bullet", "Lista com marcadores"):
             try:
                 return documento.add_paragraph(style=estilo)
@@ -373,6 +435,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _adicionar_titulo(documento, titulo: str, level: int) -> None:
+        """Adiciona titulo com fallback para paragrafos quando estilo nao existe."""
         paragrafo = None
         try:
             paragrafo = documento.add_heading(titulo, level=level)
@@ -388,6 +451,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _estilizar_paragrafo(paragrafo, tipo: str, space_before_pt: int = 0) -> None:
+        """Aplica espacamento padrao para titulos, listas e paragrafos comuns."""
         try:
             from docx.shared import Pt
         except ModuleNotFoundError:
@@ -409,6 +473,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _estilizar_run(run) -> None:
+        """Forca tipografia consistente para qualquer trecho inserido no DOCX."""
         try:
             from docx.shared import RGBColor
         except ModuleNotFoundError:
@@ -419,6 +484,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _ordem_secao_saida(nome_arquivo: str) -> int:
+        """Extrai o prefixo numerico de arquivos de secao para ordenacao."""
         match = re.match(r"^(\d+)_", nome_arquivo)
         if match:
             return int(match.group(1))
@@ -426,6 +492,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _normalizar_linhas_para_word(texto: str) -> list[str]:
+        """Normaliza linhas para exportacao, preservando no maximo uma linha vazia sequencial."""
         linhas_saida: list[str] = []
         vazio_anterior = False
         for linha in texto.splitlines():
@@ -444,6 +511,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _aplicar_espacamento_semantico(texto: str) -> str:
+        """Insere quebras entre blocos logicos (RF/RNF/RB e subtitulos)."""
         linhas = texto.splitlines()
         saida: list[str] = []
         ultimo_nao_vazio = ""
@@ -472,13 +540,16 @@ class ProjectScopeService:
 
     @staticmethod
     def _sanitizar_linha(linha: str) -> str:
+        """Remove caracteres invisiveis e espacos especiais de uma linha."""
         linha_sem_invisivel = INVISIBLE_CHARS_RE.sub("", linha or "")
         linha_sem_invisivel = linha_sem_invisivel.replace("\u00a0", " ").replace("\u2003", " ")
         return linha_sem_invisivel.strip()
 
     @staticmethod
     def _remover_paragrafos_vazios(documento) -> None:
-        for paragrafo in list(documento.paragraphs):
+        """Remove vazios de borda sem eliminar linhas em branco entre blocos validos."""
+        paragrafos = list(documento.paragraphs)
+        for indice, paragrafo in enumerate(paragrafos):
             elemento = paragrafo._element
             if ProjectScopeService._elemento_contem_tag(elemento, "drawing"):
                 continue
@@ -488,10 +559,29 @@ class ProjectScopeService:
             texto_limpo = INVISIBLE_CHARS_RE.sub("", (paragrafo.text or "")).strip()
             if texto_limpo:
                 continue
+
+            texto_anterior = ""
+            if indice > 0:
+                texto_anterior = INVISIBLE_CHARS_RE.sub(
+                    "",
+                    (paragrafos[indice - 1].text or ""),
+                ).strip()
+
+            texto_proximo = ""
+            if indice < len(paragrafos) - 1:
+                texto_proximo = INVISIBLE_CHARS_RE.sub(
+                    "",
+                    (paragrafos[indice + 1].text or ""),
+                ).strip()
+
+            if texto_anterior and texto_proximo:
+                continue
+
             elemento.getparent().remove(elemento)
 
     @staticmethod
     def _elemento_contem_tag(elemento, tag_local: str) -> bool:
+        """Verifica se o elemento XML contem determinada tag local."""
         for item in elemento.iter():
             if str(item.tag).endswith(f"}}{tag_local}"):
                 return True
@@ -499,6 +589,7 @@ class ProjectScopeService:
 
     @staticmethod
     def _elemento_contem_quebra_pagina(elemento) -> bool:
+        """Verifica se o elemento contem quebra de pagina explicita."""
         for item in elemento.iter():
             if not str(item.tag).endswith("}br"):
                 continue

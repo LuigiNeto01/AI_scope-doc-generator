@@ -1,12 +1,21 @@
-﻿# app/services
+# app/services
 
-Arquivos desta pasta:
+Camada de servicos de dominio da aplicacao.
 
-- udio_extraction_service.py: extrai audio de video com fmpeg, com fallback para imageio-ffmpeg quando necessario.
-- udio_processing_service.py: facade simples para o fluxo de extracao de audio.
-- project_scope_service.py: orquestra leitura dos prompts, geracao das secoes por IA, normalizacao final e montagem do documento .docx.
+## Responsabilidades
 
-Subpasta relevante:
+- Implementar regras operacionais da pipeline.
+- Isolar integracoes externas (ffmpeg, OpenAI, python-docx).
+- Materializar artefatos de saida (txt/docx/arquivamento).
 
-- i/: camada de acesso aos modelos da OpenAI (transcricao e geracao).
+## Arquivos
 
+- `audio_extraction_service.py`: extrai audio de video com `ffmpeg`.
+- `audio_processing_service.py`: facade simples para processamento de audio.
+- `project_scope_service.py`: gera secoes, normaliza texto e monta DOCX final.
+- `archive_service.py`: move artefatos processados para pasta versionada por timestamp.
+- `__init__.py`: exporta servicos principais da camada.
+
+## Subpasta
+
+- `ai/`: servicos de IA (transcricao e geracao textual).

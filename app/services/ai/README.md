@@ -1,9 +1,16 @@
-﻿# app/services/ai
+# app/services/ai
 
-Arquivos desta pasta:
+Subcamada de integracao com modelos da OpenAI.
 
-- __init__.py: marca o pacote de servicos de IA.
-- ase_ai.py: classe base que carrega .env, resolve OPENAI_API_KEY e cria cliente OpenAI para chamadas de modelo.
-- 	ranscription_service.py: servico de transcricao de audio usando client.audio.transcriptions.create.
-- generative_service.py: servico de geracao textual via chat completions, usado para construir secoes do escopo e normalizar texto.
+## Responsabilidades
 
+- Inicializar cliente OpenAI de forma padronizada.
+- Encapsular chamadas de transcricao e geracao de texto.
+- Centralizar validacao de credenciais de IA.
+
+## Arquivos
+
+- `__init__.py`: marca e exporta o pacote de IA.
+- `base_ai.py`: classe base para inicializacao do cliente OpenAI.
+- `transcription_service.py`: transcricao de audio para texto.
+- `generative_service.py`: geracao de texto a partir de prompts.

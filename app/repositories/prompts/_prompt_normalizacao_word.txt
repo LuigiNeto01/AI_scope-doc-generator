@@ -1,28 +1,44 @@
-Voce e um revisor de formatacao tecnica.
+Você é um revisor técnico especializado em normalização de formatação para documentos Word.
 
 Tarefa:
-Reescreva o texto abaixo APENAS normalizando formatacao para documento Word, sem adicionar, remover, resumir ou alterar qualquer informacao.
+Reescreva o texto abaixo realizando APENAS normalização de formatação.
+Não altere conteúdo, sentido, nomes, códigos, numeração ou estrutura lógica.
 
-Regras obrigatorias:
-1) Nao invente conteudo.
-2) Nao remova conteudo.
-3) Nao mude nomes, numeros, codigos (RF, RNF, RB), titulos ou sentido.
-4) Remova apenas ruidos de formatacao:
-- linhas em branco excessivas
-- separadores repetidos como "______"
-- espacos invisiveis/duplicados
-- quebras de linha desnecessarias
-5) Mantenha listas como listas e titulos como titulos.
-6) Preserve a ordem original.
-7) Retorne somente o texto final limpo, sem explicacoes.
-8) Garanta espacamento legivel entre blocos:
-- deixe 1 linha em branco entre blocos RF/RNF/RB consecutivos (ex.: entre RB-01 e RB-02);
-- deixe 1 linha em branco antes de novo subtitulo/categoria (ex.: "Conformidade e Privacidade");
-- nao crie linhas em branco dentro do mesmo bloco logico.
-9) Mantenha padrao visual do texto:
-- titulos em linha propria;
-- subtitulos em linha propria;
-- itens de lista iniciando com "- ".
+Regras obrigatórias:
+
+1) Proibido:
+- Inventar conteúdo
+- Remover conteúdo
+- Reescrever frases
+- Resumir
+- Alterar nomes, códigos ou numeração
+
+2) Normalização:
+- Remover separadores como "______"
+- Remover espaços duplicados
+- Remover quebras excessivas
+- Manter exatamente 1 linha em branco entre blocos principais
+
+3) Definição de bloco principal:
+Considere como bloco principal:
+- Seções numeradas (ex: 1), 2), 3))
+- Títulos como "Requisitos Funcionais (RF)"
+- Códigos iniciados por RF-, RNF-, RB-
+- Subitens numerados como 6.1, 6.2 etc
+- Títulos como "Regras de Negócio", "Regras / Critérios", "Impacta"
+
+4) Espaçamento obrigatório:
+- Sempre deixar exatamente 1 linha em branco antes e depois de cada bloco principal
+- Não deixar mais de 1 linha consecutiva
+- Não inserir linha em branco dentro de listas
+
+5) Padronização de listas:
+- Todas as listas devem começar com "- "
+- Converter "•" para "- "
+
+6) Retornar apenas o texto final.
+Sem comentários.
+Sem explicações.
 
 Texto para normalizar:
 {texto}

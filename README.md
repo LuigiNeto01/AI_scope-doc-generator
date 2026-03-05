@@ -1,75 +1,71 @@
-# POC IA Document
+<h1 align="center">🤖 AI Scope Doc Generator</h1>
+<p align="center">
+  Geração automática de documentos de escopo de projeto utilizando Inteligência Artificial.
+</p>
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img alt="python-docx" src="https://img.shields.io/badge/python--docx-✓-2C7FEB?style=for-the-badge"/>
+  <img alt="Status" src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge"/>
+</p>
 
-Aplicacao para transformar uma reuniao gravada em um documento tecnico de escopo.
+---
 
-## Objetivo
+## 📋 Sobre
 
-Automatizar o fluxo de descoberta de requisitos a partir de audio/video, com geracao estruturada de texto e exportacao para Word.
+O **AI Scope Doc Generator** é uma ferramenta Python que automatiza a criação de documentos de escopo de projetos (`.docx`) usando IA. Basta descrever o projeto e a ferramenta gera a documentação estruturada pronta para uso.
 
-## Fluxo Funcional
+## ✨ Funcionalidades
 
-1. Extracao de audio do video de entrada.
-2. Transcricao do audio com modelo de speech-to-text.
-3. Geracao das secoes de escopo com prompts especializados.
-4. Normalizacao final do texto consolidado para layout de documento.
-5. Geracao dos artefatos finais (`.txt` normalizado + `.docx`).
-6. Arquivamento da execucao em pasta `processada_DD-MM-AAAA_HH-MM-SS`.
+- 📄 Geração automática de documentação `.docx`
+- 🧠 Processamento via IA (Gemini / LLM)
+- 📁 Suporte a logs e scripts auxiliares
+- 🔧 Configuração simples via `.env`
 
-## Arquitetura (Resumo)
+## 🚀 Tecnologias
 
-- `main.py`: ponto de entrada com tratamento de erro padronizado.
-- `app/pipeline/`: orquestracao de alto nivel da pipeline.
-- `app/services/`: regras de dominio (audio, IA, escopo, arquivamento).
-- `app/repositories/`: artefatos est?ticos (prompts e template Word).
-- `app/core/`: constantes e excecoes de dominio.
-- `app/config/`: paths e convencoes de organizacao de arquivos.
-- `scripts/`: utilitarios para reprocessar escopo sem rerodar pipeline completa.
+| Tecnologia | Versão |
+|---|---|
+| Python | 3.10+ |
+| python-docx | ≥ 1.1.2 |
+| python-dotenv | ≥ 1.0.1 |
+| imageio-ffmpeg | ≥ 0.5.1 |
 
-## Requisitos
-
-- Python 3.10+
-- Dependencias listadas em `requirements.txt`
-- `OPENAI_API_KEY` configurada em `.env`
-- `ffmpeg` disponivel no PATH (ou fallback com `imageio-ffmpeg`)
-
-## Configuracao
-
-1. Instale as dependencias:
+## 📦 Instalação
 
 ```bash
+git clone https://github.com/LuigiNeto01/AI_scope-doc-generator.git
+cd AI_scope-doc-generator
+
 pip install -r requirements.txt
+
+cp .env.example .env
+# Edite o .env com sua API key
 ```
 
-2. Crie o arquivo `.env`:
-
-```env
-OPENAI_API_KEY=seu_token_aqui
-```
-
-## Execucao
-
-Pipeline completa:
+## 🔧 Uso
 
 ```bash
 python main.py
 ```
 
-## Scripts de Apoio
+O documento gerado será salvo na pasta de saída configurada.
 
-Gerar DOCX usando secoes `.txt` ja existentes:
+## 📁 Estrutura
 
-```bash
-python scripts/gerar_docx_escopo.py
+```
+AI_scope-doc-generator/
+├── app/            # Lógica principal
+├── scripts/        # Scripts auxiliares
+├── logs/           # Logs de execução
+├── tests/          # Testes
+├── main.py         # Ponto de entrada
+└── requirements.txt
 ```
 
-Teste de normalizacao final com saida TXT + DOCX (sem gerar secoes novamente):
+## 📝 Licença
 
-```bash
-python scripts/teste_normalizacao_existentes.py
-```
+Este projeto está sob licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.
 
-## Convencoes Importantes
+---
 
-- A pasta `data/` esta ignorada no Git para evitar versionamento de artefatos de execucao.
-- Erros de dominio usam excecoes customizadas em `app/core/exceptions.py`.
-- Paths e nomes padrao ficam centralizados em `app/config/paths.py`.
+<p align="center">Feito com ❤️ por <a href="https://github.com/LuigiNeto01">LuigiNeto01</a></p>
